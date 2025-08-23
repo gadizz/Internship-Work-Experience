@@ -1,16 +1,18 @@
 ### Day 3
-#### Set up basic Flask app structure in
+- #### Set up basic Flask app structure in
 
-#### Create route for home page (/)
+- #### Create route for home page (/)
 
-#### Set up template inheritance with base.html
+- #### Set up template inheritance with base.html
 
-#### Create basic navigation structure
+- #### Create basic navigation structure
 
-#### Implement task listing functionality
+- #### Implement task listing functionality
 
-#### Create route to display all tasks
+- #### Create route to display all tasks
 
-#### Test application runs without errors
+- #### Test application runs without errors
 
 #### Debug any issues with database connection
+
+#### Learning Goals: Web framework concepts, routing, template systems
