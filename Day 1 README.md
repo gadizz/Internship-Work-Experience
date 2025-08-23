@@ -1,4 +1,4 @@
-# Day 1:<h1>
+# Day 1:
 
 ### Task ID/Unique Identifyer:
 - Learned about and used flask for the first time
