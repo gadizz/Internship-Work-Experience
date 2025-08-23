@@ -9,3 +9,4 @@
   - Update task status
   - Delete tasks
 - #### Create database helper functions
+#### Learning Goals: Database design, SQL operations, Python database integration
