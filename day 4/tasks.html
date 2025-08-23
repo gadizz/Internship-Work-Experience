@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<h1>All Tasks</h1>
+<a href="/add">+ Add New Task</a>
+<hr>
+
+<ul>
+    {% for task in tasks %}
+        <li>
+            <strong>{{ task.title }}</strong>
+            - {{ task.created_at.strftime("%Y-%m-%d %H:%M") }}
+            <span style="color:
+                {% if task.priority == 'high' %}red
+                {% elif task.priority == 'medium' %}orange
+                {% else %}green
+                {% endif %}
+            ">
+                [{{ task.priority|capitalize }}]
+            </span>
+            {% if task.done %}✔️{% else %}❌{% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
