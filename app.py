@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -38,7 +38,7 @@ def tasks_view():
         
         return redirect(url_for('tasks_view'))
 
-    tasks = Task.query.all()
+    tasks = Task.query.order_by(Task.created_at.desc()).all()
     return render_template("tasks.html", tasks=tasks)
 
 @app.route('/add')
@@ -48,24 +48,19 @@ def add_task():
 # New routes for editing and deleting tasks
 @app.route('/tasks/edit/<int:task_id>', methods=['GET', 'POST'])
 def edit_task(task_id):
-    # Retrieve the task from the database, or return a 404 error if not found
     task = db.session.get(Task, task_id)
     if not task:
-        # You should have a 404 template to handle this gracefully
         return "Task not found", 404
 
     if request.method == 'POST':
-        # Update the task with new data from the form
-        task.title = request.form['title']
+        task.title       = request.form['title']
         task.description = request.form['description']
-        task.priority = request.form['priority']
-        task.done = 'done' in request.form
-        
+        task.priority    = request.form['priority']
+        task.done        = 'done' in request.form
         db.session.commit()
         return redirect(url_for('tasks_view'))
-    
-    # For a GET request, render the edit form with the task's current data
-    return render_template('edit_task.html', task=task)
+
+    return render_template("edit_task.html", task=task)
 
 @app.route('/tasks/delete/<int:task_id>', methods=['POST'])
 def delete_task(task_id):
@@ -79,6 +74,18 @@ def delete_task(task_id):
     db.session.commit()
     
     return redirect(url_for('tasks_view'))
+
+# New API endpoint for toggling task completion status
+@app.route('/api/tasks/<int:task_id>/toggle', methods=['POST'])
+def toggle_task(task_id):
+    task = db.session.get(Task, task_id)
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    
+    task.done = not task.done
+    db.session.commit()
+    
+    return jsonify({'done': task.done})
 
 if __name__ == '__main__':
     # You will need to run `db.create_all()` in a separate shell to create the database initially

@@ -2,74 +2,19 @@
 
 {% block title %}Tasks{% endblock %}
 
-{% block head %}
-    <style>
-        .task-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .task-item {
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .task-title {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .priority-high {
-            color: red;
-            font-weight: bold;
-        }
-
-        .priority-medium {
-            color: orange;
-            font-weight: bold;
-        }
-
-        .priority-low {
-            color: green;
-            font-weight: bold;
-        }
-
-        .task-actions a, .task-actions button {
-            margin-right: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .edit-button {
-            background-color: #007bff;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-    </style>
-{% endblock %}
-
 {% block content %}
     <h1>All Tasks</h1>
-    <a href="{{ url_for('add_task') }}">Add New Task</a>
+    <a href="{{ url_for('add_task') }}" class="button add-task-btn">Add New Task</a>
     <hr>
     {% if tasks %}
         <ul class="task-list">
         {% for task in tasks %}
-            <li class="task-item">
+            <li class="task-item" data-task-id="{{ task.id }}">
                 <span class="task-title">{{ task.title }}</span>
                 {% if task.done %}
-                    <span style="color: green;">✓ Done</span>
+                    <span class="status-done">✓ Done</span>
                 {% else %}
-                    <span style="color: red;">✗ To-Do</span>
+                    <span class="status-todo">✗ To-Do</span>
                 {% endif %}
                 <br>
                 <small>Created: {{ task.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
@@ -85,12 +30,21 @@
                 
                 <div class="task-actions">
                     <!-- Edit link -->
-                    <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit-button">Edit</a>
+                    <a href="{{ url_for('edit_task', task_id=task.id) }}" class="button edit-button">Edit</a>
                     
                     <!-- Delete form -->
                     <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this task?');">
-                        <button type="submit" class="delete-button">Delete</button>
+                        <button type="submit" class="button delete-button">Delete</button>
                     </form>
+                    
+                    <!-- Toggle done status button -->
+                    <button class="button toggle-done" data-task-id="{{ task.id }}">
+                        {% if task.done %}
+                            Mark as To-Do
+                        {% else %}
+                            Mark as Done
+                        {% endif %}
+                    </button>
                 </div>
             </li>
         {% endfor %}
@@ -99,4 +53,4 @@
         <p>No tasks yet. Add one!</p>
     {% endif %}
 {% endblock %}
-
+```
