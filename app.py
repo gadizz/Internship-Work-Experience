@@ -38,8 +38,22 @@ def tasks_view():
         
         return redirect(url_for('tasks_view'))
 
-    tasks = Task.query.order_by(Task.created_at.desc()).all()
-    return render_template("tasks.html", tasks=tasks)
+    # Get the search query from the request, if it exists
+    search_query = request.args.get('search')
+    
+    if search_query:
+        # Filter tasks by title or description
+        tasks = Task.query.filter(
+            db.or_(
+                Task.title.ilike(f'%{search_query}%'),
+                Task.description.ilike(f'%{search_query}%')
+            )
+        ).order_by(Task.created_at.desc()).all()
+    else:
+        # If no search query, show all tasks
+        tasks = Task.query.order_by(Task.created_at.desc()).all()
+
+    return render_template("tasks.html", tasks=tasks, search_query=search_query)
 
 @app.route('/add')
 def add_task():
@@ -48,19 +62,24 @@ def add_task():
 # New routes for editing and deleting tasks
 @app.route('/tasks/edit/<int:task_id>', methods=['GET', 'POST'])
 def edit_task(task_id):
+    # Retrieve the task from the database, or return a 404 error if not found
     task = db.session.get(Task, task_id)
     if not task:
+        # You should have a 404 template to handle this gracefully
         return "Task not found", 404
 
     if request.method == 'POST':
-        task.title       = request.form['title']
+        # Update the task with new data from the form
+        task.title = request.form['title']
         task.description = request.form['description']
-        task.priority    = request.form['priority']
-        task.done        = 'done' in request.form
+        task.priority = request.form['priority']
+        task.done = 'done' in request.form
+        
         db.session.commit()
         return redirect(url_for('tasks_view'))
-
-    return render_template("edit_task.html", task=task)
+    
+    # For a GET request, render the edit form with the task's current data
+    return render_template('edit_task.html', task=task)
 
 @app.route('/tasks/delete/<int:task_id>', methods=['POST'])
 def delete_task(task_id):

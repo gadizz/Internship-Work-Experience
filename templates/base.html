@@ -24,5 +24,27 @@
     
     <!-- Link to the JavaScript file -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.toggle-done').forEach(btn => {
+    // Ensure it doesn't act as a form submit button
+    btn.type = 'button';
+
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.taskId;
+      const res = await fetch(`/api/tasks/${id}/toggle`, {
+        method: 'POST'
+      });
+
+      if (res.ok) {
+        // Reload to reflect the change
+        window.location.reload();
+      } else {
+        console.error('Toggle failed', await res.json());
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>

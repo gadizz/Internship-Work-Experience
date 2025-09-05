@@ -61,3 +61,19 @@
 .inline-form {
     display: inline;
 }
+
+.toggle-done {
+  background-color: #28a745; /* bootstrap-green; adjust as you like */
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Optional: add a hover state */
+.toggle-done:hover {
+  background-color: #218838;
+}
+
+
